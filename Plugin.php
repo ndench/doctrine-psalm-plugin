@@ -23,7 +23,12 @@ class Plugin implements PluginEntryPointInterface
     /** @return string[] */
     private function getStubFiles(): array
     {
-        return glob(__DIR__ . '/' . 'stubs/*.php');
+        $files = glob(__DIR__ . '/' . 'stubs/*.php');
+        [$ver,] = explode('@', $this->getPackageVersion('doctrine/collections'));
+        if (version_compare($ver, 'v1.6.0', '>=')) {
+            $files = preg_grep('/Collections\.php$/', $files, PREG_GREP_INVERT);
+        }
+        return $files;
     }
 
     /** @return string[] */
